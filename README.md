@@ -1,9 +1,145 @@
-# rtchatweb
-Tính năng chính
-1. Trò chuyện thời gian thực:
-Sử dụng Django Channels và WebSocket để hỗ trợ giao tiếp tức thời giữa người dùng, cho phép gửi và nhận tin nhắn, hình ảnh, hoặc thông báo trong thời gian thực.
-Tích hợp phòng chat nhóm và chat riêng tư (one-to-one), phù hợp cho các cuộc thảo luận nhóm hoặc giao tiếp cá nhân.
-Hiển thị trạng thái "đang nhập" hoặc "đang gõ" để tăng tính tương tác.
-2. Chơi game trực tuyến:
-Tích hợp các trò chơi đơn giản hoặc đa người chơi (multiplayer) như cờ caro, đoán số, hoặc các mini-game tùy chỉnh, được xây dựng bằng Python và JavaScript.
-Hỗ trợ bảng xếp hạng (leaderboard) để theo dõi điểm số và khuyến khích cạnh tranh giữa người dùng.
+📹 RealtimeWeb — Ứng dụng Gọi Video & Chat Thời Gian Thực
+
+Ứng dụng RealtimeWeb là một hệ thống gọi video/audio + chat thời gian thực được xây dựng bằng WebRTC, WebSocket (Python) và mã hóa AES động.
+Dự án hỗ trợ truyền thông an toàn, xuyên NAT bằng STUN/TURN, và có thể hoạt động ngay trong mạng LAN hoặc Internet (qua ngrok/HTTPS).
+
+🚀 Tính năng chính
+
+🔊 Truyền video/audio thời gian thực qua WebRTC (SRTP + DTLS).
+
+💬 Chat an toàn sử dụng WebRTC DataChannel.
+
+🔐 Mã hóa AES-GCM động, tự xoay khóa theo thời gian.
+
+🌐 Signaling server viết bằng Python (WebSocket + HTTP).
+
+⚙️ Tự cấu hình STUN/TURN (coturn) để xuyên NAT.
+
+💻 Chạy được ngay trên localhost hoặc mạng LAN.
+
+📱 Hỗ trợ trình duyệt desktop/mobile (Chrome, Edge, Firefox).
+
+🏗️ Cấu trúc dự án
+RealtimeWeb/
+├── statics/
+│   └── diagram.png          # Sơ đồ tổng quan hệ thống
+│
+├── source/
+│   ├── client/              # Frontend WebRTC + AES DataChannel
+│   │   ├── app.js
+│   │   ├── index.html
+│   │   └── style.css
+│   │
+│   ├── server/              # WebSocket signaling server (Python)
+│   │   ├── server.py
+│   │   ├── README.md        # Hướng dẫn ngrok / HTTPS / TURN
+│   │   └── turn_config.md   # Cấu hình coturn
+│   │
+│   └── scripts/             # (Tùy chọn) Script đo lường / test hiệu năng
+│
+└── README.md                # File hướng dẫn chính (bạn đang đọc)
+
+⚙️ Cài đặt & chạy nhanh (Localhost / LAN)
+🔧 1. Cài Python và dependencies
+cd source/server
+pip install -r requirements.txt
+
+▶️ 2. Chạy signaling server
+python server.py
+
+
+Server HTTP + WebSocket sẽ khởi động tại:
+📍 http://localhost:8000 (HTTP)
+📍 ws://localhost:8765 (WebSocket)
+
+💻 3. Mở ứng dụng trên trình duyệt
+
+Mở 2 tab trình duyệt tại địa chỉ:
+
+http://localhost:8000
+
+
+Nhập cùng Room ID ở cả hai tab.
+
+Cho phép truy cập camera + microphone.
+
+Hai tab sẽ thấy video của nhau và chat qua AES-DataChannel.
+
+🌐 Demo trên nhiều máy (cùng mạng LAN)
+
+Trên máy chạy server, lấy IP LAN (ví dụ: 172.11.59.61).
+
+Trên máy khác cùng mạng, mở:
+
+http://172.11.59.61:8000
+
+
+WebSocket tự động dùng:
+
+ws://172.11.59.61:8765
+
+
+⚠️ Trên mobile Chrome, cần HTTPS để truy cập camera/mic.
+
+Xem hướng dẫn trong source/server/README.md để chạy ngrok nhanh.
+
+🌍 Xuyên NAT với TURN Server (coturn)
+
+Dựng coturn theo hướng dẫn trong
+source/server/turn_config.md
+
+Cập nhật phần ICE servers trong:
+
+source/client/app.js
+
+
+Ví dụ:
+
+const iceServers = [
+  { urls: "stun:stun.l.google.com:19302" },
+  {
+    urls: "turn:your-turn-server-ip:3478",
+    username: "webrtc",
+    credential: "123456"
+  }
+];
+
+🔐 Mã hóa AES-GCM động
+
+Các gói tin từ DataChannel được mã hóa bằng AES-GCM 256-bit.
+
+Hệ thống tự xoay khóa định kỳ để đảm bảo an toàn.
+
+Việc mã hóa/giải mã được xử lý toàn bộ phía client (trong app.js).
+
+📦 Yêu cầu hệ thống
+Thành phần	Phiên bản khuyến nghị
+Python	≥ 3.8
+Node.js	≥ 18 (nếu build frontend)
+Trình duyệt	Chrome / Edge / Firefox (>= 100)
+Mạng	LAN hoặc NAT có STUN/TURN
+🧩 Sơ đồ hệ thống
+  [ Browser A ] ←→ [ WebSocket Server (Python) ] ←→ [ Browser B ]
+         ↕                    ↑                          ↕
+       WebRTC             Signaling                 WebRTC
+         ↕                    ↓                          ↕
+      STUN/TURN          NAT Traversal              STUN/TURN
+
+
+Xem thêm file statics/diagram.png để biết chi tiết cấu trúc truyền thông.
+
+🧠 Tài liệu liên quan
+
+WebRTC Overview – MDN
+
+DTLS/SRTP Security Architecture
+
+TURN/STUN (coturn)
+
+AES-GCM Spec – NIST
+
+✨ Tác giả
+
+RealtimeWeb được phát triển bởi lovelybugf
+
+💡 Mục tiêu: Minh họa giao tiếp thời gian thực an toàn với WebRTC + Python WebSocket.
