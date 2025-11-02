@@ -1,9 +1,9 @@
-📹 RealtimeWeb — Ứng dụng Gọi Video & Chat Thời Gian Thực
+**📹 RealtimeWeb — Ứng dụng Gọi Video & Chat Thời Gian Thực**
 
 Ứng dụng RealtimeWeb là một hệ thống gọi video/audio + chat thời gian thực được xây dựng bằng WebRTC, WebSocket (Python) và mã hóa AES động.
 Dự án hỗ trợ truyền thông an toàn, xuyên NAT bằng STUN/TURN, và có thể hoạt động ngay trong mạng LAN hoặc Internet (qua ngrok/HTTPS).
 
-🚀 Tính năng chính
+**🚀 Tính năng chính**
 
 🔊 Truyền video/audio thời gian thực qua WebRTC (SRTP + DTLS).
 
@@ -19,27 +19,27 @@ Dự án hỗ trợ truyền thông an toàn, xuyên NAT bằng STUN/TURN, và c
 
 📱 Hỗ trợ trình duyệt desktop/mobile (Chrome, Edge, Firefox).
 
-🏗️ Cấu trúc dự án
+**🏗️ Cấu trúc dự án**
 RealtimeWeb/
 ├── statics/
-│   └── diagram.png          # Sơ đồ tổng quan hệ thống
+│   └── diagram.png         
 │
 ├── source/
-│   ├── client/              # Frontend WebRTC + AES DataChannel
+│   ├── client/            
 │   │   ├── app.js
 │   │   ├── index.html
 │   │   └── style.css
 │   │
-│   ├── server/              # WebSocket signaling server (Python)
+│   ├── server/              
 │   │   ├── server.py
-│   │   ├── README.md        # Hướng dẫn ngrok / HTTPS / TURN
-│   │   └── turn_config.md   # Cấu hình coturn
+│   │   |   
+│   │   └── turn_config.md   
 │   │
-│   └── scripts/             # (Tùy chọn) Script đo lường / test hiệu năng
+│   └── scripts/             
 │
-└── README.md                # File hướng dẫn chính (bạn đang đọc)
+└── README.md               
 
-⚙️ Cài đặt & chạy nhanh (Localhost / LAN)
+**⚙️ Cài đặt & chạy nhanh (Localhost / LAN)**
 🔧 1. Cài Python và dependencies
 cd source/server
 pip install -r requirements.txt
@@ -93,17 +93,6 @@ Cập nhật phần ICE servers trong:
 source/client/app.js
 
 
-Ví dụ:
-
-const iceServers = [
-  { urls: "stun:stun.l.google.com:19302" },
-  {
-    urls: "turn:your-turn-server-ip:3478",
-    username: "webrtc",
-    credential: "123456"
-  }
-];
-
 🔐 Mã hóa AES-GCM động
 
 Các gói tin từ DataChannel được mã hóa bằng AES-GCM 256-bit.
@@ -112,7 +101,7 @@ Hệ thống tự xoay khóa định kỳ để đảm bảo an toàn.
 
 Việc mã hóa/giải mã được xử lý toàn bộ phía client (trong app.js).
 
-📦 Yêu cầu hệ thống
+**📦 Yêu cầu hệ thống**
 Thành phần	Phiên bản khuyến nghị
 Python	≥ 3.8
 Node.js	≥ 18 (nếu build frontend)
@@ -128,7 +117,7 @@ Mạng	LAN hoặc NAT có STUN/TURN
 
 Xem thêm file statics/diagram.png để biết chi tiết cấu trúc truyền thông.
 
-🧠 Tài liệu liên quan
+**🧠 Tài liệu liên quan**
 
 WebRTC Overview – MDN
 
@@ -138,8 +127,3 @@ TURN/STUN (coturn)
 
 AES-GCM Spec – NIST
 
-✨ Tác giả
-
-RealtimeWeb được phát triển bởi lovelybugf
-
-💡 Mục tiêu: Minh họa giao tiếp thời gian thực an toàn với WebRTC + Python WebSocket.
